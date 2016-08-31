@@ -1,21 +1,31 @@
 {
   "name": "angular-token-auth",
   "version": "0.1.0",
+  "scripts": {
+    "dev" : "nodemon server",
+    "start" : "node server",
+    "build": "browserify app > public/bundle.js",
+    "build:watch": "watchify app -d -o public/bundle.js -v",
+    "build:es2015:watch" : "watchify app -t babelify -o public/bundle.js -v"
+  },
+  "description": "Example of Token-based authentication in [AngularJS](http://angularjs.org) with [Express](http://expressjs.com).",
+  "main": "auth.server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/auth0/angular-token-auth.git"
+  },
   "dependencies": {
     "body-parser": "^1.9.0",
     "express": "~4.9.0",
     "express-jwt": "~0.2.1",
     "jsonwebtoken": "~0.4.0"
   },
-  "description": "Example of Token-based authentication in [AngularJS](http://angularjs.org) with [Express](http://expressjs.com).",
-  "main": "auth.server.js",
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/auth0/angular-token-auth.git"
+  "devDependencies": {
+    "angular": "^1.5.8",
+    "babelify": "^7.3.0",
+    "eslint": "^3.4.0",
+    "eslint-config-airbnb": "^10.0.1",
+    "watchify": "^3.7.0"
   },
   "keywords": [
     "angular",
