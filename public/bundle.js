@@ -37,14 +37,14 @@ module.exports = responseError;
 },{}],4:[function(require,module,exports){
 function callRestricted($scope, $http) {
 
-	const url = '/api/restricted';
-	const method = 'GET';
+  const url = '/api/restricted';
+  const method = 'GET';
 
-	$http({ url, method }).success((data, status, headers, config) => {
-		$scope.message = ` ${ $scope.message } ${ data.name }`; // Should log 'foo'
-	}).error((data, status, headers, config) => {
-		alert(data);
-	});
+  $http({ url, method }).success(data /*, status, headers, config*/ => {
+    $scope.message = `${ $scope.message } ${ data.name }`; // Should log 'foo'
+  }).error(data /*, status, headers, config*/ => {
+    alert(data);
+  });
 }
 
 module.exports = callRestricted;
@@ -56,7 +56,10 @@ const callRestricted = require('./callRestricted.js');
 
 function UserCtrl($scope, $http, $window) {
 
-  $scope.user = { username: 'john.doe', password: 'foobar' };
+  const username = 'john.doe';
+  const password = 'foobar';
+
+  $scope.user = { username, password };
   $scope.isAuthenticated = false;
   $scope.welcome = '';
   $scope.message = '';
@@ -72,6 +75,7 @@ module.exports = UserCtrl;
 
 },{"./callRestricted.js":4,"./logout.js":6,"./submit.js":7}],6:[function(require,module,exports){
 function logout($scope, $window) {
+
   $scope.welcome = '';
   $scope.message = '';
   $scope.isAuthenticated = false;
@@ -90,7 +94,7 @@ function submit($scope, $window, $http) {
     $scope.isAuthenticated = true;
     var encodedProfile = data.token.split('.')[1];
     var profile = JSON.parse(url_base64_decode(encodedProfile));
-    $scope.welcome = 'Welcome ' + profile.first_name + ' ' + profile.last_name;
+    $scope.welcome = `Welcome ${ profile.first_name } ${ profile.last_name }`;
   }).error((data, status, headers, config) => {
     // Erase the token if the user fails to log in
     delete $window.sessionStorage.token;

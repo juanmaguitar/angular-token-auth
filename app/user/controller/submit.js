@@ -9,7 +9,7 @@ function submit( $scope, $window, $http ) {
       $scope.isAuthenticated = true;
       var encodedProfile = data.token.split('.')[1];
       var profile = JSON.parse(url_base64_decode(encodedProfile));
-      $scope.welcome = 'Welcome ' + profile.first_name + ' ' + profile.last_name;
+      $scope.welcome = `Welcome ${profile.first_name} ${profile.last_name}`;
     })
     .error( (data, status, headers, config) => {
       // Erase the token if the user fails to log in

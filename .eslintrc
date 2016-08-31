@@ -2,8 +2,7 @@
     "extends": "airbnb",
     "installedESLint": true,
     "rules" :{
-    	"no-console" : "warn",
-    	"space-in-parens": [2, "always"]
+      "no-console" : "warn",
+      "space-in-parens": [2, "always"]
     }
-
 }

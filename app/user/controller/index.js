@@ -4,7 +4,10 @@ const callRestricted = require('./callRestricted.js');
 
 function UserCtrl($scope, $http, $window) {
 
-  $scope.user = { username: 'john.doe', password: 'foobar' };
+  const username = 'john.doe';
+  const password = 'foobar';
+
+  $scope.user = { username, password };
   $scope.isAuthenticated = false;
   $scope.welcome = '';
   $scope.message = '';
