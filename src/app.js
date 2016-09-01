@@ -7,5 +7,7 @@ angular.module('myApp', [])
 	.controller('UserCtrl', UserCtrl)
 	.factory('authInterceptor', authInterceptor)
 	.config( ($httpProvider) => {
+    // http://onehungrymind.com/winning-http-interceptors-angularjs/
 	  $httpProvider.interceptors.push('authInterceptor');
 	});
+
