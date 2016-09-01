@@ -1,145 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-const request = require('./request.js');
-const responseError = require('./responseError.js');
-
-function authInterceptor($q, $window) {
-  return {
-    request: request.bind(null, $window),
-    responseError: request.bind(null, $q)
-  };
-}
-
-authInterceptor.$inject = ['$q', '$window'];
-
-module.exports = authInterceptor;
-
-},{"./request.js":2,"./responseError.js":3}],2:[function(require,module,exports){
-function request($window, config) {
-  config.headers = config.headers || {};
-  if ($window.sessionStorage.token) {
-    config.headers.Authorization = 'Bearer ' + $window.sessionStorage.token;
-  }
-  return config;
-}
-
-module.exports = request;
-
-},{}],3:[function(require,module,exports){
-function responseError(rejection) {
-  if (rejection.status === 401) {
-    // handle the case where the user is not authenticated
-  }
-  return $q.reject(rejection);
-}
-
-module.exports = responseError;
-
-},{}],4:[function(require,module,exports){
-function callRestricted($scope, $http) {
-
-  const url = '/api/restricted';
-  const method = 'GET';
-
-  $http({ url, method }).success(data /*, status, headers, config*/ => {
-    $scope.message = `${ $scope.message } ${ data.name }`; // Should log 'foo'
-  }).error(data /*, status, headers, config*/ => {
-    alert(data);
-  });
-}
-
-module.exports = callRestricted;
-
-},{}],5:[function(require,module,exports){
-const submit = require('./submit.js');
-const logout = require('./logout.js');
-const callRestricted = require('./callRestricted.js');
-
-function UserCtrl($scope, $http, $window) {
-
-  const username = 'john.doe';
-  const password = 'foobar';
-
-  $scope.user = { username, password };
-  $scope.isAuthenticated = false;
-  $scope.welcome = '';
-  $scope.message = '';
-
-  $scope.submit = submit.bind(null, $scope, $window, $http);
-  $scope.logout = logout.bind(null, $scope, $window);
-  $scope.callRestricted = callRestricted.bind(null, $scope, $http);
-}
-
-UserCtrl.$inject = ['$scope', '$http', '$window'];
-
-module.exports = UserCtrl;
-
-},{"./callRestricted.js":4,"./logout.js":6,"./submit.js":7}],6:[function(require,module,exports){
-function logout($scope, $window) {
-
-  $scope.welcome = '';
-  $scope.message = '';
-  $scope.isAuthenticated = false;
-  delete $window.sessionStorage.token;
-}
-
-module.exports = logout;
-
-},{}],7:[function(require,module,exports){
-const url_base64_decode = require('../../utils').url_base64_decode;
-
-function submit($scope, $window, $http) {
-
-  $http.post('/authenticate', $scope.user).success((data, status, headers, config) => {
-    $window.sessionStorage.token = data.token;
-    $scope.isAuthenticated = true;
-    var encodedProfile = data.token.split('.')[1];
-    var profile = JSON.parse(url_base64_decode(encodedProfile));
-    $scope.welcome = `Welcome ${ profile.first_name } ${ profile.last_name }`;
-  }).error((data, status, headers, config) => {
-    // Erase the token if the user fails to log in
-    delete $window.sessionStorage.token;
-    $scope.isAuthenticated = false;
-
-    // Handle login errors here
-    $scope.error = 'Error: Invalid user or password';
-    $scope.welcome = '';
-  });
-}
-
-module.exports = submit;
-
-},{"../../utils":8}],8:[function(require,module,exports){
-//this is used to parse the profile
-const url_base64_decode = str => {
-  var output = str.replace('-', '+').replace('_', '/');
-  switch (output.length % 4) {
-    case 0:
-      break;
-    case 2:
-      output += '==';
-      break;
-    case 3:
-      output += '=';
-      break;
-    default:
-      throw 'Illegal base64url string!';
-  }
-  return window.atob(output); //polifyll https://github.com/davidchambers/Base64.js
-};
-
-module.exports.url_base64_decode = url_base64_decode;
-
-},{}],9:[function(require,module,exports){
-const angular = require('angular');
-
-const UserCtrl = require('./user/controller');
-const authInterceptor = require('./services/authInterceptor');
-
-angular.module('myApp', []).controller('UserCtrl', UserCtrl).factory('authInterceptor', authInterceptor).config($httpProvider => {
-	$httpProvider.interceptors.push('authInterceptor');
-});
-
-},{"./services/authInterceptor":1,"./user/controller":5,"angular":11}],10:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -31908,8 +31767,150 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],11:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":10}]},{},[9]);
+},{"./angular":1}],3:[function(require,module,exports){
+const angular = require('angular');
+
+const UserCtrl = require('./user/controller');
+const authInterceptor = require('./services/authInterceptor');
+
+angular.module('myApp', []).controller('UserCtrl', UserCtrl).factory('authInterceptor', authInterceptor).config($httpProvider => {
+	$httpProvider.interceptors.push('authInterceptor');
+});
+
+},{"./services/authInterceptor":4,"./user/controller":8,"angular":2}],4:[function(require,module,exports){
+const request = require('./request.js');
+const responseError = require('./responseError.js');
+
+function authInterceptor($q, $window) {
+  return {
+    request: request.bind(null, $window),
+    responseError: request.bind(null, $q)
+  };
+}
+
+authInterceptor.$inject = ['$q', '$window'];
+
+module.exports = authInterceptor;
+
+},{"./request.js":5,"./responseError.js":6}],5:[function(require,module,exports){
+function request($window, config) {
+  config.headers = config.headers || {};
+  if ($window.sessionStorage.token) {
+    config.headers.Authorization = 'Bearer ' + $window.sessionStorage.token;
+  }
+  return config;
+}
+
+module.exports = request;
+
+},{}],6:[function(require,module,exports){
+function responseError(rejection) {
+  if (rejection.status === 401) {
+    // handle the case where the user is not authenticated
+  }
+  return $q.reject(rejection);
+}
+
+module.exports = responseError;
+
+},{}],7:[function(require,module,exports){
+function callRestricted($scope, $http) {
+
+  const url = '/api/restricted';
+  const method = 'GET';
+
+  $http({ url, method }).success(data /*, status, headers, config*/ => {
+    console.log(data);
+    $scope.message = `Did you know that: ${ data.msg }`;
+  }).error(data /*, status, headers, config*/ => {
+    alert(data);
+  });
+}
+
+module.exports = callRestricted;
+
+},{}],8:[function(require,module,exports){
+const submit = require('./submit.js');
+const logout = require('./logout.js');
+const callRestricted = require('./callRestricted.js');
+
+function UserCtrl($scope, $http, $window) {
+
+  const username = 'john.doe';
+  const password = 'foobar';
+
+  $scope.user = { username, password };
+  $scope.isAuthenticated = false;
+  $scope.welcome = '';
+  $scope.message = '';
+
+  $scope.submit = submit.bind(null, $scope, $window, $http);
+  $scope.logout = logout.bind(null, $scope, $window);
+  $scope.callRestricted = callRestricted.bind(null, $scope, $http);
+}
+
+UserCtrl.$inject = ['$scope', '$http', '$window'];
+
+module.exports = UserCtrl;
+
+},{"./callRestricted.js":7,"./logout.js":9,"./submit.js":10}],9:[function(require,module,exports){
+function logout($scope, $window) {
+
+  $scope.welcome = '';
+  $scope.message = '';
+  $scope.isAuthenticated = false;
+  delete $window.sessionStorage.token;
+}
+
+module.exports = logout;
+
+},{}],10:[function(require,module,exports){
+const url_base64_decode = require('../../utils').url_base64_decode;
+
+function submit($scope, $window, $http) {
+
+  $http.post('/authenticate', $scope.user).success((data, status, headers, config) => {
+    $window.sessionStorage.token = data.token;
+    $scope.isAuthenticated = true;
+    var encodedProfile = data.token.split('.')[1];
+    var profile = JSON.parse(url_base64_decode(encodedProfile));
+    $scope.welcome = `Welcome ${ profile.first_name } ${ profile.last_name }`;
+  }).error((data, status, headers, config) => {
+    // Erase the token if the user fails to log in
+    delete $window.sessionStorage.token;
+    $scope.isAuthenticated = false;
+
+    // Handle login errors here
+    $scope.error = 'Error: Invalid user or password';
+    $scope.welcome = '';
+  });
+}
+
+module.exports = submit;
+
+},{"../../utils":11}],11:[function(require,module,exports){
+//this is used to parse the profile
+const url_base64_decode = str => {
+  var output = str.replace('-', '+').replace('_', '/');
+  switch (output.length % 4) {
+    case 0:
+      break;
+    case 2:
+      output += '==';
+      break;
+    case 3:
+      output += '=';
+      break;
+    default:
+      throw 'Illegal base64url string!';
+  }
+  return window.atob(output); //polifyll https://github.com/davidchambers/Base64.js
+};
+
+module.exports.url_base64_decode = url_base64_decode;
+
+},{}]},{},[3]);

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');  //https://npmjs.org/package/node-jsonwebtoken
-const secret = 'this is the secret secret secret 12356';
+const secret = require('../../../config').secret;
 
 function authenticate(req, res) {
   //TODO validate req.body.username and req.body.password

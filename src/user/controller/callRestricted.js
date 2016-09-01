@@ -5,7 +5,8 @@ function callRestricted( $scope, $http ) {
 
   $http( { url, method } )
     .success( (data /*, status, headers, config*/) => {
-      $scope.message = `${$scope.message} ${data.name}`; // Should log 'foo'
+      console.log(data);
+      $scope.message = `Did you know that: ${data.msg}`;
     })
     .error( (data /*, status, headers, config*/) => {
       alert(data);
